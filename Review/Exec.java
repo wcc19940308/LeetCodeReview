@@ -1,6 +1,25 @@
 package LeetCode.Review;
 
 public class Exec {
+
+    public static class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode(int x) {
+            val = x;
+        }
+    }
+
+    public static class ListNode {
+        int val;
+        ListNode next;
+
+        ListNode(int x) {
+            val = x;
+        }
+    }
     public static int findKthLargest(int[] nums, int k) {
         int index = quickSelect(nums, 0, nums.length - 1, nums.length - k + 1);
         return nums[index];
@@ -33,8 +52,59 @@ public class Exec {
         nums[hi] = tmp;
     }
 
-    public static void main(String[] args) {
-        int[] nums = {3, 2, 1, 5, 6, 4};
-        System.out.println(findKthLargest(nums, 2));
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null) return root;
+        TreeNode left = invertTree(root.left);
+        TreeNode right = invertTree(root.right);
+        root.left = right;
+        root.right = left;
+        return root;
     }
+
+    public boolean isPalindrome(ListNode head) {
+        if (head == null || head.next == null) {
+            return true;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        slow = slow.next;
+        slow = reverseList(slow);
+        fast = head;
+        while (slow != null) {
+            if (fast.val != slow.val) {
+                return false;
+            }
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return true;
+    }
+
+    public ListNode reverseList(ListNode head) {
+        ListNode pre = null;
+        ListNode next = null;
+        while (head != null) {
+            next = head.next;
+            head.next = pre;
+            pre = head;
+            head = next;
+        }
+        return pre;
+    }
+
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (p == root || q == root || root == null) return root;
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if (left != null && right != null) {
+            return root;
+        }
+        return left == null ? right : left;
+    }
+
+
 }
