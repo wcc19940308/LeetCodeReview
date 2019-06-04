@@ -1,9 +1,6 @@
 package LeetCode.Review;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 public class Exec {
 
@@ -25,30 +22,35 @@ public class Exec {
             val = x;
         }
     }
-    public static int findKthLargest(int[] nums, int k) {
-        int index = quickSelect(nums, 0, nums.length - 1, nums.length - k + 1);
-        return nums[index];
-    }
 
-    public static int quickSelect(int[] nums, int lo, int hi, int k) {
-        int random = lo + (int) Math.random() * (hi - lo + 1);
-        swap(nums, random, hi);
-        int i = lo, j = hi, pivot = nums[hi];
-        while (i < j) {
-            if (nums[i++] > pivot) {
-                swap(nums, --i, --j);
+    public static int findKthLargest(int[] nums, int k) {
+        int target = nums.length - k;
+        int lo = 0, hi = nums.length - 1;
+        while (lo <= hi) {
+            int res = partition(nums, lo, hi);
+            if (res == target) {
+                break;
+            } else if (res < target) {
+                lo = res + 1;
+            } else {
+                hi = res - 1;
             }
         }
-        swap(nums, i, hi);
-        int m = i - lo + 1;
-        if (m == k) {
-            return i;
-        } else if (m < k) {
-            return quickSelect(nums, i + 1, hi, k - m);
-        } else {
-            return quickSelect(nums, lo, i - 1, k);
-        }
+        return nums[target];
+    }
 
+    public static int partition(int[] nums, int lo, int hi) {
+        int random = lo + (int) Math.random() * (hi - lo + 1);
+        swap(nums, random, hi);
+        int pivot = nums[hi];
+        while (lo < hi) {
+            while (lo < hi && nums[lo] <= pivot) lo++;
+            nums[hi] = nums[lo];
+            while (lo < hi && nums[hi] > pivot) hi--;
+            nums[lo] = nums[hi];
+        }
+        nums[lo] = pivot;
+        return lo;
     }
 
     public static void swap(int[] nums, int lo, int hi) {
@@ -57,81 +59,8 @@ public class Exec {
         nums[hi] = tmp;
     }
 
-    public TreeNode invertTree(TreeNode root) {
-        if (root == null) return root;
-        TreeNode left = invertTree(root.left);
-        TreeNode right = invertTree(root.right);
-        root.left = right;
-        root.right = left;
-        return root;
+    public static void main(String[] args) {
+        int[] nums = {3,2,3,1,2,4,5,5,6};
+        System.out.println(findKthLargest(nums, 4));
     }
-
-    public boolean isPalindrome(ListNode head) {
-        if (head == null || head.next == null) {
-            return true;
-        }
-        ListNode slow = head;
-        ListNode fast = head;
-        while (fast != null && fast.next != null) {
-            slow = slow.next;
-            fast = fast.next.next;
-        }
-        slow = slow.next;
-        slow = reverseList(slow);
-        fast = head;
-        while (slow != null) {
-            if (fast.val != slow.val) {
-                return false;
-            }
-            slow = slow.next;
-            fast = fast.next;
-        }
-        return true;
-    }
-
-    public ListNode reverseList(ListNode head) {
-        ListNode pre = null;
-        ListNode next = null;
-        while (head != null) {
-            next = head.next;
-            head.next = pre;
-            pre = head;
-            head = next;
-        }
-        return pre;
-    }
-
-    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        if (p == root || q == root || root == null) return root;
-        TreeNode left = lowestCommonAncestor(root.left, p, q);
-        TreeNode right = lowestCommonAncestor(root.right, p, q);
-        if (left != null && right != null) {
-            return root;
-        }
-        return left == null ? right : left;
-    }
-
-    public int maxCoins(int[] nums) {
-        int n = nums.length;
-        int[] newNum = new int[n + 2];
-        for (int i = 1; i <= n; i++) {
-            newNum[i] = nums[i - 1];
-        }
-        newNum[0] = newNum[n + 1] = 1;
-        int res = backTrack(newNum, new int[n + 2][n + 2], 1, n);
-        return res;
-    }
-
-    public int backTrack(int[] nums, int[][] memo, int i, int j) {
-        if (i > j) return 0;
-        if (memo[i][j] > 0) return memo[i][j];
-        int res = 0;
-        for (int k = i; k <= j; k++) {
-            res = Math.max(res, res + nums[i - 1] * nums[k] * nums[j + 1]
-                    + backTrack(nums, memo, i, k - 1) + backTrack(nums, memo, k + 1, j));
-        }
-        memo[i][j] = res;
-        return res;
-    }
-
 }
