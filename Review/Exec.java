@@ -111,6 +111,27 @@ public class Exec {
         return left == null ? right : left;
     }
 
+    public int maxCoins(int[] nums) {
+        int n = nums.length;
+        int[] newNum = new int[n + 2];
+        for (int i = 1; i <= n; i++) {
+            newNum[i] = nums[i - 1];
+        }
+        newNum[0] = newNum[n + 1] = 1;
+        int res = backTrack(newNum, new int[n + 2][n + 2], 1, n);
+        return res;
+    }
 
+    public int backTrack(int[] nums, int[][] memo, int i, int j) {
+        if (i > j) return 0;
+        if (memo[i][j] > 0) return memo[i][j];
+        int res = 0;
+        for (int k = i; k <= j; k++) {
+            res = Math.max(res, res + nums[i - 1] * nums[k] * nums[j + 1]
+                    + backTrack(nums, memo, i, k - 1) + backTrack(nums, memo, k + 1, j));
+        }
+        memo[i][j] = res;
+        return res;
+    }
 
 }
