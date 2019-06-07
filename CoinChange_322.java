@@ -38,8 +38,6 @@ public class CoinChange_322 {
         return dp[amount] > amount ? -1 : dp[amount];
     }
 
-    public static void main(String[] args) {
-        int[] nums = {2};
-        System.out.println(coinChange_dp(nums, 3));
-    }
+
+
 }
