@@ -1,5 +1,7 @@
 package LeetCode.Review;
 
+import edu.princeton.cs.algs4.In;
+
 import java.util.*;
 
 public class Exec {
@@ -178,7 +180,195 @@ public class Exec {
         return dp[n];
     }
 
-    public static void main(String[] args) {
-        System.out.println(numSquares(12));
+    public int minDistance(String word1, String word2) {
+        int m = word1.length();
+        int n = word2.length();
+        int res = backTrack(word1, word2, 0, 0, new int[m][n]);
+        return res;
+    }
+
+    public int backTrack(String word1, String word2, int i, int j, int[][] memo) {
+        // 如果某个字符串先结束了，那么直接返回另外一个字符串剩下的长度
+        if (i == word1.length()) return word2.length() - j;
+        if (j == word2.length()) return word1.length() - i;
+        if (memo[i][j] > 0) return memo[i][j];
+        int res = 0;
+        // 如果i和j相等，那么只需要比较后面的即可
+        if (word1.charAt(i) == word2.charAt(j)) {
+            return backTrack(word1, word2, i + 1, j + 1, memo);
+            // 否则，需要对word1进行增加、删除或者修改
+        } else {
+            int insertCount = backTrack(word1, word2, i, j + 1, memo);
+            int deleteCount = backTrack(word1, word2, i + 1, j, memo);
+            int changeCount = backTrack(word1, word2, i + 1, j + 1, memo);
+            res = 1 + Math.min(insertCount, Math.min(deleteCount, changeCount));
+        }
+        return memo[i][j];
+    }
+
+    public int minDistance_DP(String word1, String word2) {
+        int m = word1.length();
+        int n = word2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 0; i <= m; i++) {
+            dp[i][0] = i;
+        }
+        for (int i = 0; i <= n; i++) {
+            dp[0][i] = i;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    // 自底向上，对word1进行增加、删除或者修改
+                    dp[i][j] = Math.min(dp[i][j - 1], Math.min(dp[i - 1][j], dp[i - 1][j - 1])) + 1;
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    public List<String> removeInvalidParentheses(String s) {
+        List<String> list = new ArrayList<>();
+        int left = 0, right = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') {
+                left++;
+            } else if (left != 0 && s.charAt(i) == ')') {
+                left--;
+            } else if (left == 0 && s.charAt(i) == ')') {
+                right++;
+            }
+        }
+        dfs(s, list, left, right, 0);
+        return list;
+    }
+
+    public void dfs(String s, List<String> list, int left, int right,int start) {
+        if (left == 0 && right == 0) {
+            if (isValid(s)) {
+                list.add(s);
+            }
+        }
+        for (int i = start; i < s.length(); i++) {
+            if (i > start && s.charAt(i) == s.charAt(i - 1)) {
+                continue;
+            }
+            if (left > 0 && s.charAt(i) == '(') {
+                dfs(s.substring(0, i) + s.substring(i + 1), list, left - 1, right, i);
+            }
+            if (right > 0 && s.charAt(i) == ')') {
+                dfs(s.substring(0, i) + s.substring(i + 1), list, left, right - 1, i);
+            }
+        }
+    }
+
+    public boolean isValid(String s) {
+        int count = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(') count++;
+            if (s.charAt(i) == ')') count--;
+            if (count < 0) return false;
+        }
+        return true;
+    }
+
+    int max = 0;
+    public int longestUnivaluePath(TreeNode root) {
+        longestThroughRoot(root);
+        return max;
+    }
+
+    public int longestThroughRoot(TreeNode root) {
+        if (root == null) return 0;
+        int left = longestThroughRoot(root.left);
+        int right = longestThroughRoot(root.right);
+        int pl = 0, pr = 0;
+        if (left != 0 && root.val == root.left.val) {
+            pl += left;
+        }
+        if (right != 0 && root.val == root.right.val) {
+            pr += right;
+        }
+        max = Math.max(max, pl + pr);
+        return Math.max(pl, pr) + 1;
+    }
+
+    public static boolean wordBreak(String s, List<String> wordDict) {
+        int n = s.length();
+        boolean[] dp = new boolean[n + 1];
+        dp[0] = true;
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && wordDict.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                }
+            }
+        }
+        return dp[n];
+    }
+
+
+
+    public int rob(int[] nums) {
+        if (nums.length == 0) return 0;
+        int[] dp = new int[nums.length + 1];
+        dp[0] = 0;
+        dp[1] = nums[0];
+        for (int i = 2; i <= nums.length; i++) {
+            dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i - 1]);
+        }
+        return dp[nums.length];
+    }
+
+    public  int lengthOfLongestSubstring(String s) {
+        int n = s.length(), ans = 0;
+        Map<Character, Integer> map = new HashMap<>(); // current index of character
+        for (int j = 0, i = 0; j < n; j++) {
+            if (map.containsKey(s.charAt(j))) {
+                // 重复的元素可能在区间里，也可能在区间外部（左侧）
+                i = Math.max(map.get(s.charAt(j)), i);
+            }
+            ans = Math.max(ans, j - i + 1);
+            map.put(s.charAt(j), j + 1);
+        }
+        return ans;
+    }
+
+    public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
+        // 这里可以通过map来表示有向图
+        Map<String, Map<String, Double>> map = new HashMap<>();
+        double[] res = new double[queries.size()];
+        for (int i = 0; i < equations.size(); i++) {
+            // 根据equations中的式子分别求出a/b和b/a
+            map.putIfAbsent(equations.get(i).get(0), new HashMap<>());
+            map.get(equations.get(i).get(0)).put(equations.get(i).get(1), values[i]);
+
+            map.putIfAbsent(equations.get(i).get(1), new HashMap<>());
+            map.get(equations.get(i).get(1)).put(equations.get(i).get(0), 1.0 / values[i]);
+        }
+        for (int i = 0; i < queries.size(); i++) {
+            res[i] = dfs(queries.get(i).get(0), queries.get(i).get(1), map, new HashSet<>());
+        }
+        return res;
+    }
+
+    public double dfs(String A, String B, Map<String, Map<String, Double>> map, Set<String> set) {
+        if (!map.containsKey(A) || !map.containsKey(B)) {
+            return -1.0;
+        }
+        if (A.equals(B)) {
+            return 1.0;
+        }
+        Map<String, Double> pair = map.get(A);
+        set.add(A);
+        for (String index : pair.keySet()) {
+            // 这里的set主要是为了防止邻居节点的回边，重复访问节点
+            if (set.contains(index)) continue;
+            double res = dfs(index, B, map, set);
+            if (res > 0) return pair.get(index) * res;
+        }
+        return -1.0;
     }
 }

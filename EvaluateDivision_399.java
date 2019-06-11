@@ -30,7 +30,7 @@ public class EvaluateDivision_399 {
         visited.add(A);
         Map<String, Double> pair = map.get(A);
         for (String key : pair.keySet()) {
-            // 为了防止对邻居节点的重复访问
+            // 为了防止对邻居节点的重复访问,即防止回边的访问
             if (visited.contains(key)) continue;
             double res = dfs(key, B, map, visited);
             if (res > 0) return res * map.get(A).get(key);

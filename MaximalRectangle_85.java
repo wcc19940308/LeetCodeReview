@@ -2,7 +2,7 @@ package LeetCode;
 
 import java.util.Stack;
 
-public class MaximalRectangle {
+public class MaximalRectangle_85 {
     public int maximalRectangle(char[][] matrix) {
         if (matrix.length == 0 || matrix[0].length == 0) return 0;
         int m = matrix.length;
