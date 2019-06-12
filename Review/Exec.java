@@ -371,4 +371,29 @@ public class Exec {
         }
         return -1.0;
     }
+
+    public int maxCoins(int[] nums) {
+        int n = nums.length;
+        int[][] dp = new int[n][n];
+        for (int len = 1; len <= n; len++) {
+            for (int i = 0; i <= n - len; i++) {
+                int j = len + i - 1;
+                for (int k = i; k <= j; k++) {
+                    int leftValue = 1, rightValue = 1;
+                    int before = 0, after = 0;
+                    if (i != 0) {
+                        leftValue = nums[i - 1];
+                    }
+                    if (j != n - 1) {
+                        rightValue = nums[j + 1];
+                    }
+                    if (k != i) {
+                        before = dp[]
+                    }
+                }
+            }
+        }
+    }
+
+
 }
