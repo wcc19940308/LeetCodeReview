@@ -39,16 +39,20 @@ public class BurstBalloons_312 {
                 int j = i + len - 1;
                 for (int k = i; k <= j; k++) {
                     int leftValue = 1, rightValue = 1;
+                    // 左边不用乘1
                     if (i != 0) {
                         leftValue = nums[i - 1];
                     }
+                    // 右边不用乘1
                     if (j != n - 1) {
                         rightValue = nums[j + 1];
                     }
                     int before = 0, after = 0;
+                    // 得到左边的得分
                     if (k != i) {
                         before = dp[i][k - 1];
                     }
+                    // 得到右边的得分
                     if (k != j) {
                         after = dp[k + 1][j];
                     }
