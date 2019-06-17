@@ -216,4 +216,44 @@ public class Exec {
         return dp[amount] == amount + 1 ? -1 : dp[amount];
     }
 
+    public static int hammingDistance(int x, int y) {
+        int res = 0;
+        while (x != 0 || y != 0) {
+            res += (x & 1) ^ (y & 1);
+            x >>>= 1;
+            y >>>= 1;
+        }
+        return res;
+    }
+
+    public static void main(String[] args) {
+        int res = hammingDistance(1, 4);
+        System.out.println(res);
+    }
+
+    public int findUnsortedSubarray(int[] nums) {
+        int n = nums.length;
+        int[] newNums = new int[n];
+        for (int i = 0; i < n; i++) {
+            newNums[i] = nums[i];
+        }
+        Arrays.sort(newNums);
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            if (newNums[i] != nums[i]) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+        if (t1 == null) return t2;
+        if (t2 == null) return t1;
+        TreeNode root = new TreeNode(t1.val + t2.val);
+        root.left = mergeTrees(t1.left, t2.left);
+        root.right = mergeTrees(t1.right, t2.right);
+        return root;
+    }
+
 }
