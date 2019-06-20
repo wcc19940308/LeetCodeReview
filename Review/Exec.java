@@ -226,10 +226,7 @@ public class Exec {
         return res;
     }
 
-    public static void main(String[] args) {
-        int res = hammingDistance(1, 4);
-        System.out.println(res);
-    }
+
 
     public int findUnsortedSubarray(int[] nums) {
         int n = nums.length;
@@ -254,6 +251,88 @@ public class Exec {
         root.left = mergeTrees(t1.left, t2.left);
         root.right = mergeTrees(t1.right, t2.right);
         return root;
+    }
+
+    public String decodeString(String s) {
+        Stack<Integer> intStack = new Stack<>();
+        Stack<StringBuilder> strStack = new Stack<>();
+        StringBuilder sb = new StringBuilder();
+        int k = 0;
+        for (Character ch : s.toCharArray()) {
+            if (Character.isDigit(ch)) {
+                k = k * 10 + ch - '0';
+            } else if (ch == '[') {
+                intStack.push(k);
+                strStack.push(sb);
+                k = 0;
+                sb = new StringBuilder();
+            } else if (ch == ']') {
+                StringBuilder tmp = sb;
+                Integer pop = intStack.pop();
+                sb = strStack.pop();
+                while (pop-- > 0) {
+                    sb.append(tmp);
+                }
+            } else {
+                sb.append(ch);
+            }
+        }
+        return sb.toString();
+    }
+
+    public int subarraySum(int[] nums, int k) {
+        int sum = 0;
+        int count = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+            if (map.containsKey(sum - k)) {
+                count += map.get(sum - k);
+            }
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        }
+        return count;
+    }
+
+    public static List<Integer> findAnagrams(String s, String p) {
+        int[] hash = new int[128];
+        int cnt = p.length();
+        int left = 0, right = 0;
+        List<Integer> res = new ArrayList<>();
+        for (Character ch : p.toCharArray()) {
+            hash[ch]++;
+        }
+        while (right < s.length()) {
+            if (hash[s.charAt(right++)]-- > 0) cnt--;
+            if (cnt == 0) {
+                res.add(left);
+            }
+            // 这里保证一旦找到了满足条件的字符串，就先移动左指针，保持左右指针之间的距离一直为p的长度
+            if (right - left == p.length() && hash[s.charAt(left++)]++ >= 0) {
+                cnt++;
+            }
+        }
+        return res;
+    }
+
+    public int FindGreatestSumOfSubArray(int[] array) {
+        int max_ending_here = array[0];
+        int max_so_far = array[0];
+        for (int i = 1; i < array.length; i++) {
+            max_ending_here = Math.max(array[i], array[i] + max_ending_here);
+            max_so_far = Math.max(max_so_far, max_ending_here);
+        }
+        return max_so_far;
+    }
+    public int Add(int num1,int num2) {
+        return (num2 == 0) ? num1 : Add(num1 ^ num2, (num1 & num2) << 1);
+    }
+
+    public static void main(String[] args) {
+        String s = "abab";
+        String p = "ab";
+        System.out.println(findAnagrams(s, p));
     }
 
 }
