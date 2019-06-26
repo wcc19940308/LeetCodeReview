@@ -59,4 +59,23 @@ public class Exec {
         }
         return newChar;
     }
+
+    public static int firstMissingPositive(int[] nums) {
+        int min = Integer.MAX_VALUE;
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] > 0) {
+                min = Math.min(min, nums[i]);
+            }
+        }
+        for (int i = 1;;i++) {
+            if (i == min) continue;
+            return i;
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {1, 2, 0};
+        System.out.println(firstMissingPositive(nums));
+    }
 }
